@@ -57,6 +57,7 @@ def load_batches(input_path, batch_size):
         for index, line in enumerate(feature_batch):
             feature_batch[index] = tensor_to_index(line.split())
         return feature_batch
+
 # defining hyperparameters
 batch_size = 100
 epochs = 100
@@ -96,15 +97,11 @@ checkpointer = ModelCheckpoint(filepath='code_table_model.hdf5',
                                verbose=1,
                                save_best_only=True)
 
-model.fit(X_train, y_train,
-          batch_size=batch_size,
-          epochs=epochs,
-          verbose=1,
-          shuffle=True,
-          validation_split=0.2,
-          callbacks=[early_stopping, checkpointer])
 
-y_predict = model.predict_classes(X_predict)
+model.fit_generator(load_batches(path_to_train_data,batch_size=batch_size),epochs=epochs,callbacks=[early_stopping, checkpointer])
 
-for test, pred in zip(read_test_file, y_predict):
-    print("label:", test, 'prediction: ', index_to_label[pred])
+
+# y_predict = model.predict_classes(X_predict)
+
+# for test, pred in zip(read_test_file, y_predict):
+#     print("label:", test, 'prediction: ', index_to_label[pred])
