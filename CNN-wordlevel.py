@@ -39,11 +39,15 @@ def load_dataset(train_path, test_path):
     words_to_index = dict((c, i) for i, c in enumerate(all_words))
     index_to_words = dict((i, c) for i, c in enumerate(all_words))
     return words_to_index, index_to_words
+
+
 word2index, index2word = load_dataset(path_to_train_data, path_to_test_data)
+
 
 def tensor_to_index(tensor):
     processed_tensor = list(map(word2index.get, tensor))
     return processed_tensor
+
 
 def load_batches(input_path, batch_size):
     df = pd.read_csv(input_path)
@@ -53,10 +57,12 @@ def load_batches(input_path, batch_size):
     while True:
         feature_batch = features[i:batch_size]
         label_batch = labels[i:batch_size]
+        label_batch = list(map(labels2index.get, label_batch))
         feature_batch = np.ndarray.tolist(feature_batch)
         for index, line in enumerate(feature_batch):
             feature_batch[index] = tensor_to_index(line.split())
         return feature_batch
+
 
 # defining hyperparameters
 batch_size = 100
@@ -65,6 +71,7 @@ epochs = 100
 # defining model
 model = Sequential()
 # input layer
+max_len = len(max(open(path_to_train_data, 'r'), key=len))
 model.add(Embedding(batch_size, 32, mask_zero=False))
 
 # Convolution layer
@@ -97,9 +104,8 @@ checkpointer = ModelCheckpoint(filepath='code_table_model.hdf5',
                                verbose=1,
                                save_best_only=True)
 
-
-model.fit_generator(load_batches(path_to_train_data,batch_size=batch_size),epochs=epochs,callbacks=[early_stopping, checkpointer])
-
+model.fit_generator(load_batches(path_to_train_data, batch_size=batch_size), epochs=epochs,
+                    callbacks=[early_stopping, checkpointer])
 
 # y_predict = model.predict_classes(X_predict)
 
