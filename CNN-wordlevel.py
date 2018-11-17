@@ -54,10 +54,9 @@ def load_batches(input_path, batch_size):
         feature_batch = features[i:batch_size]
         label_batch = labels[i:batch_size]
         feature_batch = np.ndarray.tolist(feature_batch)
-        for line in feature_batch:
-            line = tensor_to_index(line.split())
+        for index, line in enumerate(feature_batch):
+            feature_batch[index] = tensor_to_index(line.split())
         return feature_batch
-print((load_batches(path_to_train_data,2)))
 # defining hyperparameters
 batch_size = 100
 epochs = 100
