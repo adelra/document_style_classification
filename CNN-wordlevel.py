@@ -58,12 +58,11 @@ def load_batches(input_path, batch_size):
         feature_batch = features[i:batch_size]
         label_batch = labels[i:batch_size]
         label_batch = list(map(labels2index.get, label_batch))
-        feature_batch = np.ndarray.tolist(feature_batch)
-        for index, line in enumerate(feature_batch):
+        for index, line in np.ndenumerate(feature_batch):
             feature_batch[index] = tensor_to_index(line.split())
         yield feature_batch, label_batch
 
-
+print(next(load_batches(path_to_train_data,100))[0].shape)
 # defining hyperparameters
 batch_size = 100
 epochs = 100
@@ -72,7 +71,7 @@ epochs = 100
 model = Sequential()
 # input layer
 max_len = len(max(open(path_to_train_data, 'r'), key=len))
-model.add(Embedding(batch_size, 32, mask_zero=False))
+model.add(Embedding(input_dim=[batch_size, None, None], output_dim=32, mask_zero=False))
 
 # Convolution layer
 model.add(Conv1D(1024, 7, activation='relu', name='activation_1_conv1d'))
