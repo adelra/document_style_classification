@@ -45,7 +45,7 @@ word2index, index2word = load_dataset(path_to_train_data, path_to_test_data)
 
 
 def tensor_to_index(tensor):
-    processed_tensor = list(map(word2index.get, tensor))
+    processed_tensor = np.asarray(list(map(word2index.get, tensor)))
     return processed_tensor
 
 
@@ -62,7 +62,7 @@ def load_batches(input_path, batch_size):
             feature_batch[index] = tensor_to_index(line.split())
         yield feature_batch, label_batch
 
-print(next(load_batches(path_to_train_data,100))[0].shape)
+a_ = next(load_batches(path_to_train_data,100))
 # defining hyperparameters
 batch_size = 100
 epochs = 100
@@ -71,7 +71,7 @@ epochs = 100
 model = Sequential()
 # input layer
 max_len = len(max(open(path_to_train_data, 'r'), key=len))
-model.add(Embedding(input_dim=[batch_size, None, None], output_dim=32, mask_zero=False))
+model.add(Embedding(input_dim=batch_size, output_dim=32, mask_zero=False))
 
 # Convolution layer
 model.add(Conv1D(1024, 7, activation='relu', name='activation_1_conv1d'))
