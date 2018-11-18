@@ -63,7 +63,7 @@ def load_batches(input_path, batch_size):
             feature_batch[index] = tensor_to_index(line.split())
         yield feature_batch, label_batch
 
-print(next(load_batches(path_to_train_data,2))[0])
+
 # defining hyperparameters
 batch_size = 100
 epochs = 100
@@ -76,7 +76,7 @@ model.add(Embedding(batch_size, 32, mask_zero=False))
 
 # Convolution layer
 model.add(Conv1D(1024, 7, activation='relu', name='activation_1_conv1d'))
-model.add(MaxPooling1D(3))
+model.add(MaxPooling1D(pool_size=3))
 model.add(Dropout(0.5))
 
 # FC
