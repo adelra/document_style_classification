@@ -5,7 +5,6 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Conv1D, MaxPooling1D, Embedding, Activation, Dense, Dropout, Flatten
 from keras.models import Sequential
 from keras.preprocessing import sequence
-
 path_to_train_data = 'news_train.csv'
 path_to_test_data = 'news_test.csv'
 
@@ -71,7 +70,7 @@ epochs = 100
 model = Sequential()
 # input layer
 max_len = len(max(open(path_to_train_data, 'r'), key=len))
-model.add(Embedding(input_dim=batch_size, output_dim=32, mask_zero=False))
+model.add(Embedding(input_dim=batch_size, input_length=max_len, output_dim=32, mask_zero=False))
 
 # Convolution layer
 model.add(Conv1D(1024, 7, activation='relu', name='activation_1_conv1d'))
@@ -104,7 +103,7 @@ checkpointer = ModelCheckpoint(filepath='code_table_model.hdf5',
                                save_best_only=True)
 
 model.fit_generator(load_batches(path_to_train_data, batch_size=batch_size), epochs=epochs,
-                    callbacks=[early_stopping, checkpointer])
+                    callbacks=[early_stopping, checkpointer], steps_per_epoch=100)
 
 # y_predict = model.predict_classes(X_predict)
 
