@@ -74,6 +74,7 @@ epochs = 10
 print('input shape: ', next(load_batches(path_to_train_data, batch_size))[0].shape)
 
 # Convolution layer
+#TODO: Xavier init
 model = Sequential()
 model.add(Conv1D(64, kernel_size=5, strides=1,
                  activation='relu',
@@ -91,9 +92,9 @@ model.add(MaxPooling1D(pool_size=5))
 
 model.add(Flatten())
 model.add(Dense(50, activation='relu'))
-model.add(Dense(4, activation='softmax', name='softmax'))
-# RMSprop optimizer
-optimizer = optimizers.Adam(lr=0.001)
+model.add(Dense(4, activation='softmax', name='softmax_layer'))
+# Adam optimizer
+optimizer = optimizers.Adam(lr=0.0001)
 model.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
 model.summary()
 early_stopping = EarlyStopping(patience=10, verbose=1)
