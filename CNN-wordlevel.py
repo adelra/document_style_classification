@@ -17,6 +17,12 @@ vocab_size = len(set(open(path_to_train_data, 'r').read().split()))
 
 
 def load_dataset(train_path, test_path):
+    '''
+    This function loads the entire dataset and creates two dictionaries for mapping between words and indexes
+    :param train_path: train data path
+    :param test_path: test data path
+    :return: two dictionaries as tuple
+    '''
     train = pd.read_csv(train_path)
     test = pd.read_csv(test_path)
     features_file = np.hstack((train.values[:, 1], test.values[:, 1]))
