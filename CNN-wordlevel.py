@@ -99,11 +99,12 @@ model.summary()
 early_stopping = EarlyStopping(patience=10, verbose=1)
 steps_per_epoch = (sequence_length / batch_size)
 # checkpoint saver
-checkpointer = ModelCheckpoint(filepath='code_table_model.hdf5',
+checkpointer = ModelCheckpoint(filepath='model.hdf5',
                                verbose=1)
 batch_iterator = load_batches(path_to_train_data, batch_size=batch_size)
 test_data_length = 4000
-test_gen = load_batches(path_to_test_data, batch_size=test_data_length)
+valid_batch = 30
+test_gen = load_batches(path_to_test_data, batch_size=valid_batch)
 model.fit_generator(batch_iterator, epochs=epochs, steps_per_epoch=steps_per_epoch,
-                    callbacks=[checkpointer, early_stopping],validation_data=test_gen, validation_steps=test_data_length)
+                    callbacks=[checkpointer, early_stopping],validation_data=test_gen, validation_steps=test_data_length/valid_batch)
 
