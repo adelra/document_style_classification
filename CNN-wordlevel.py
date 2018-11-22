@@ -65,23 +65,24 @@ def load_batches(input_path, batch_size):
             y_batch = y_batch.reshape([batch_size, 4])
             start += batch_size
             end += batch_size
-            yield (x_batch, y_batch)
+        yield (x_batch, y_batch)
 
 
 # defining hyperparameters
-batch_size = 300
-epochs = 100
+batch_size = 50
+epochs = 10
 print('input shape: ', next(load_batches(path_to_train_data, batch_size))[0].shape)
 
 # Convolution layer
 model = Sequential()
-model.add(Conv1D(128, kernel_size=3, strides=1,
+model.add(Conv1D(64, kernel_size=5, strides=1,
                  activation='relu',
                  input_shape=(max_len, 1), padding='SAME'))
-model.add(MaxPooling1D(pool_size=3, strides=2))
-model.add(Conv1D(256, 5, activation='relu', padding='SAME'))
-model.add(MaxPooling1D(pool_size=2))
-
+model.add(MaxPooling1D(pool_size=5, strides=2))
+model.add(Conv1D(64, 5, activation='relu', padding='SAME'))
+model.add(MaxPooling1D(pool_size=5))
+model.add(Conv1D(64, 5, activation='relu', padding='SAME'))
+model.add(MaxPooling1D(pool_size=5))
 # FC layer
 # before the FC the we flatten our tensors
 # Generally We try to avoid/lower FC connections because they only add
@@ -89,7 +90,6 @@ model.add(MaxPooling1D(pool_size=2))
 #  memory but do not add much to the network learning
 
 model.add(Flatten())
-model.add(Dense(100, activation='relu'))
 model.add(Dense(50, activation='relu'))
 model.add(Dense(4, activation='softmax', name='softmax'))
 # RMSprop optimizer
@@ -100,13 +100,10 @@ early_stopping = EarlyStopping(patience=10, verbose=1)
 steps_per_epoch = (sequence_length / batch_size)
 # checkpoint saver
 checkpointer = ModelCheckpoint(filepath='code_table_model.hdf5',
-                               verbose=1,
-                               save_best_only=True)
+                               verbose=1)
 batch_iterator = load_batches(path_to_train_data, batch_size=batch_size)
-model.fit_generator(batch_iterator, epochs=epochs,
-                    callbacks=[early_stopping, checkpointer], steps_per_epoch=steps_per_epoch)
+test_data_length = 4000
+test_gen = load_batches(path_to_test_data, batch_size=test_data_length)
+model.fit_generator(batch_iterator, epochs=epochs, steps_per_epoch=steps_per_epoch,
+                    callbacks=[checkpointer, early_stopping],validation_data=test_gen, validation_steps=test_data_length)
 
-# y_predict = model.predict_classes(X_predict)
-
-# for test, pred in zip(read_test_file, y_predict):
-#     print("label:", test, 'prediction: ', index_to_label[pred])
