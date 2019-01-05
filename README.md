@@ -1,5 +1,7 @@
 # Document Classification based on Writing style
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/671a7ec12ff04b378bfd7605d7478a2b)](https://app.codacy.com/app/adelra/document_style_classification?utm_source=github.com&utm_medium=referral&utm_content=adelra/document_style_classification&utm_campaign=Badge_Grade_Dashboard)
+
 This repository uses CNNs for classifying documents. The network has 4m parameters and uses 3, 64 layer 1d convolutional layers. Details are:
 ```
 Layer (type)                 Output Shape              Param #
