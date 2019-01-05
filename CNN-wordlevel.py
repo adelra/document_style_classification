@@ -71,7 +71,7 @@ def load_batches(input_path, batch_size):
             y_batch = y_batch.reshape([batch_size, 4])
             start += batch_size
             end += batch_size
-        yield (x_batch, y_batch)
+            yield (x_batch, y_batch)
 
 
 # defining hyperparameters
